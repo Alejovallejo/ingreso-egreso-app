@@ -1,11 +1,18 @@
 import { BrowserModule } from '@angular/platform-browser';
+import {FormsModule} from '@angular/forms'
 import { NgModule } from '@angular/core';
 
-import {FormsModule} from '@angular/forms'
+//Firebase
+import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
-import { AngularFireAuth } from '@angular/fire/auth';
+
+
+// counter.ts
+import { Action, StoreModule } from '@ngrx/store';
+import { appReducers } from './app.reducer';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
 
 
 import { AppComponent } from './app.component';
@@ -41,9 +48,11 @@ import { environment } from '../environments/environment';
     AngularFireModule,
     AngularFirestoreModule,
     AngularFireAuthModule,
-    AngularFireModule.initializeApp(environment.firebase)
-
-    
+    AngularFireModule.initializeApp(environment.firebase),
+    StoreModule.forRoot(appReducers),
+    StoreDevtoolsModule.instrument({
+      maxAge: 5
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

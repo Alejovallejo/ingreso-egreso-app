@@ -52,7 +52,12 @@
 
 
                   <div class="form-group">
-                    <button (click)="VerificacionDatos(f.value)" class="btn btn-primary submit-btn btn-block">Login</button>
+
+                    <button *ngIf="!cargando" (click)="VerificacionDatos(f.value)" class="btn btn-primary submit-btn btn-block">Login</button>
+                    <button *ngIf="cargando" (click)="VerificacionDatos(f.value)" class="btn btn-primary submit-btn btn-block">Esperame unos segundos Crack...
+                        <i class="fa fa-spin fa-sync"></i>
+                       </button>
+                     
                   </div>
                   
                   
