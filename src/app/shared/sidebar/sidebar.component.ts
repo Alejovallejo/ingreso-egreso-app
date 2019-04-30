@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from '../../auth/auth.service';
+import { AppState } from '../../app.reducer';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/app.reducer';
 import { Subscription } from 'rxjs';
 import { filter } from 'rxjs/operators';
-import { IngresoEgreso } from '../../ingreso-egreso/ingreso-egreso-model';
 import { IngresoEgresoService } from '../../ingreso-egreso/ingreso-egreso.service';
+import { auth } from 'firebase';
 
 @Component({
   selector: 'app-sidebar',
@@ -19,29 +18,30 @@ export class SidebarComponent implements OnInit, OnDestroy {
   email: string;
   subscription: Subscription = new Subscription();
 
-
-  constructor(public router: Router,
-              public auth: AuthService,
-              private store: Store<AppState>,
-              public ingresoEgresoService: IngresoEgresoService) { }
+  constructor( public authService: AuthService,
+               public ingresoEgresoService: IngresoEgresoService,
+               private store: Store<AppState> ) { }
 
   ngOnInit() {
+
     this.subscription = this.store.select('auth')
-    .pipe(
-      filter(data => data.user != null)
-    ).subscribe(data => {
-        this.nombre = data.user.nombre
-        this.email = data.user.email
-    });
+        .pipe(
+          filter( auth => auth.user != null )
+        )
+        .subscribe( auth => {
+          this.nombre = auth.user.nombre,
+          this.email = auth.user.email
+        });
+
   }
 
-  ngOnDestroy(){
+  logout() {
+    this.authService.logout();
+    this.ingresoEgresoService.cancelarSubscriptions();
+  }
+
+  ngOnDestroy() {
     this.subscription.unsubscribe();
-  }
-
-  cerrarSesion(){
-    this.auth.logout();
-    this.ingresoEgresoService.cancelarSubs();
   }
 
 }

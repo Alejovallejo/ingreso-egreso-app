@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { IngresoEgreso } from '../ingreso-egreso/ingreso-egreso-model';
 import { IngresoEgresoService } from '../ingreso-egreso/ingreso-egreso.service';
 
 @Component({
@@ -9,13 +8,12 @@ import { IngresoEgresoService } from '../ingreso-egreso/ingreso-egreso.service';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(public ingresoEgresoService: IngresoEgresoService) {
-
-   }
+  constructor( public ingresoEgresoService: IngresoEgresoService ) { }
 
   ngOnInit() {
 
     this.ingresoEgresoService.initIngresoEgresoListener();
+
   }
 
 }

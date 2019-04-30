@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from 'src/app/app.reducer';
+// import { AppState } from '../../app.reducer';
 import { Subscription } from 'rxjs';
-import { IngresoEgreso } from '../ingreso-egreso-model';
-import { ChartType } from 'chart.js';
-import { MultiDataSet, Label } from 'ng2-charts';
+import { IngresoEgreso } from '../ingreso-egreso.model';
+
+import * as fromIngresoEgreso from '../ingreso-egreso.reducer';
+
 
 @Component({
   selector: 'app-estadistica',
@@ -16,29 +17,24 @@ export class EstadisticaComponent implements OnInit {
   ingresos: number;
   egresos: number;
 
-
   cuantosIngresos: number;
   cuantosEgresos: number;
 
   subscription: Subscription = new Subscription();
 
-  constructor(private store: Store<AppState>) { }
+  public doughnutChartLabels: string[] = ['Ingresos', 'Egresos'];
+  public doughnutChartData: number[] = [];
 
-  public doughnutChartLabels: Label[] = ['Ingresos', 'Egresos'];
-  public doughnutChartData: number[] = []
-  // public doughnutChartType: ChartType = 'doughnut';
-
-
+  constructor( private store: Store<fromIngresoEgreso.AppState> ) { }
 
   ngOnInit() {
-
     this.subscription = this.store.select('ingresoEgreso')
-                        .subscribe(ingresoEgreso =>{
-                          this.ContarIngresoEgreso(ingresoEgreso.items);
-                        });
+            .subscribe( ingresoEgreso => {
+              this.contarIngresoEgreso( ingresoEgreso.items );
+            });
   }
 
-  ContarIngresoEgreso(items: IngresoEgreso[]){
+  contarIngresoEgreso( items: IngresoEgreso[] ) {
 
     this.ingresos = 0;
     this.egresos = 0;
@@ -46,18 +42,20 @@ export class EstadisticaComponent implements OnInit {
     this.cuantosEgresos = 0;
     this.cuantosIngresos = 0;
 
-
     items.forEach( item => {
-      if(item.tipo === 'ingreso'){
+
+      if ( item.tipo === 'ingreso' ) {
         this.cuantosIngresos ++;
         this.ingresos += item.monto;
-      }else{
+      } else {
         this.cuantosEgresos ++;
         this.egresos += item.monto;
       }
+
     });
 
-    this.doughnutChartData = [this.ingresos, this.egresos]
+    this.doughnutChartData = [ this.ingresos, this.egresos ];
+
   }
 
 }
